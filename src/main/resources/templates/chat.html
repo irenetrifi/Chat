@@ -27,6 +27,19 @@
         <script th:inline="javascript">
             $(document).ready(function () {
 
+                function receiveMsg() {
+                    $.post({
+                        url: 'receiveMsg',
+                        success: function(data){
+                            console.log(data);
+                            $('#chat').append('<li>'+ JSON.stringify(data.message.contentMsg) + '</li>');
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            console.log(xhr.responseText);
+                        }
+                    });
+                };
+
                 $('#formMsg').submit(function (event) {
 
                     var message = {
@@ -43,12 +56,15 @@
                         success: function (data) {
                             console.log("validated=" + data.validated);
                             console.log("msg=" + JSON.stringify(data.message));
-                            $('#chat').append('<li>'+ JSON.stringify(data.message.contentMsg) + '</li>');
+                            //$('#chat').append('<li>'+ JSON.stringify(data.message.contentMsg) + '</li>');
                         },
                         error: function(xhr, textStatus, errorThrown){
                             console.log(xhr.responseText);
                         }
                     });
+                    
+                    setTimeout(receiveMsg, 3000);
+                    
                 });
 
                 /*if(msg){

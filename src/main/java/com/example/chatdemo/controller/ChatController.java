@@ -2,6 +2,7 @@ package com.example.chatdemo.controller;
 
 import com.example.chatdemo.model.Message;
 import com.example.chatdemo.model.MessageJsonResponse;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ChatController {
     
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+    
+    ArrayList<MessageJsonResponse> messages = new ArrayList();
     
     @GetMapping(value={"/chat"})
     public String chat(){
@@ -46,13 +49,20 @@ public class ChatController {
             response.setErrorMessages(errors);
         }
         else {
-            //invia messaggio...
+            messages.add(response);
             response.setValidated(true);
             response.setMessage(message);
         }
         
         return response;
         
+    }
+    
+    @PostMapping(value="/receiveMsg", produces={MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    public MessageJsonResponse receiveMsg(){
+        MessageJsonResponse response = messages.get(messages.size() - 1);
+        return response;
     }
     
 }
