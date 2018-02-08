@@ -1,0 +1,61 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+        <title>Chat</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h2>Test Chat</h2>
+
+        <div id="box-chat">
+            <div>
+                <ul id="chat">
+
+                </ul>
+            </div>
+            <div>
+                <form id="formMsg" action="sendMsg" method="post">
+                    <input type="text" name="contentMsg"/>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            $(document).ready(function () {
+
+                $('#formMsg').submit(function (event) {
+
+                    var message = {
+                        'contentMsg': $('input[name=contentMsg]').val()
+                    };
+                    console.log(message.contentMsg);
+                    //prevent default submission of form
+                    event.preventDefault();
+
+                    $.post({
+                        url: 'sendMsg',
+                        data: $('#formMsg').serialize(),
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log("validated=" + data.validated);
+                            console.log("msg=" + JSON.stringify(data.message));
+                            $('#chat').append('<li>'+ JSON.stringify(data.message.contentMsg) + '</li>');
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            console.log(xhr.responseText);
+                        }
+                    });
+                });
+
+                /*if(msg){
+                 $("#chat").append("<li>" + msg + "</li>");
+                 }*/
+            });
+        </script>
+
+    </body>
+</html>
